@@ -1,0 +1,74 @@
+# ==================================================
+# LOG CHATBOT - REQUIREMENTS FILE
+# ==================================================
+# This file contains all dependencies for the log analysis chatbot
+# with multi-model support (Groq + Azure OpenAI)
+
+# ==================================================
+# CORE WEB FRAMEWORK
+# ==================================================
+streamlit>=1.28.0                    # Main web interface framework for the chatbot UI
+
+# ==================================================
+# AI/ML FRAMEWORKS & MODELS
+# ==================================================
+langchain>=0.1.0                     # Core framework for building AI applications with LLMs
+langchain-community>=0.0.10          # Community extensions for LangChain (additional integrations)
+langchain-groq>=0.1.0                # Groq API integration for LangChain (fast inference models)
+langchain-openai>=0.1.0              # Azure OpenAI integration for LangChain (enterprise models)
+
+# ==================================================
+# LLM API CLIENTS
+# ==================================================
+groq>=0.4.0                          # Direct Groq API client (Llama models, fast inference)
+openai>=1.0.0                        # Azure OpenAI API client (GPT-4, GPT-4o models)
+
+# ==================================================
+# VECTOR DATABASE & EMBEDDINGS
+# ==================================================
+faiss-cpu>=1.7.0                     # Facebook AI Similarity Search - vector database for RAG
+sentence-transformers>=2.2.0         # Sentence embeddings for document chunking and retrieval
+
+# ==================================================
+# DATA PROCESSING & VISUALIZATION
+# ==================================================
+pandas>=2.0.0                        # Data manipulation for performance metrics and analysis
+plotly>=5.0.0                        # Interactive charts for model performance visualization
+numpy>=1.24.0                        # Numerical computing (dependency for pandas/plotly)
+
+# ==================================================
+# MISSING DEPENDENCIES
+# ==================================================
+huggingface-hub>=0.16.0               # HuggingFace model hub for embeddings
+transformers>=4.30.0                 # HuggingFace transformers (required by sentence-transformers)
+torch>=2.0.0                         # PyTorch (required by sentence-transformers and transformers)
+
+# ==================================================
+# UTILITIES & NETWORKING
+# ==================================================
+requests>=2.28.0                     # HTTP client for Azure OAuth token management
+python-dotenv>=1.0.0                 # Environment variable management for API keys
+typing-extensions>=4.0.0             # Enhanced type hints for better code quality
+
+# ==================================================
+# TEXT PROCESSING
+# ==================================================
+tiktoken>=0.5.0                      # OpenAI tokenizer for token counting and text processing
+charset-normalizer>=3.0.0            # Text encoding detection and normalization
+
+# ==================================================
+# ADDITIONAL DEPENDENCIES
+# ==================================================
+# Note: Some packages may install additional dependencies automatically:
+# - streamlit brings: tornado, click, altair, pympler, watchdog, etc.
+# - langchain brings: pydantic, sqlalchemy, tenacity, etc.
+# - sentence-transformers brings: transformers, torch, etc.
+# - pandas brings: pytz, python-dateutil, etc.
+
+# ==================================================
+# DEVELOPMENT & TESTING (Optional)
+# ==================================================
+# Uncomment for development:
+# pytest>=7.0.0                      # Testing framework
+# black>=23.0.0                      # Code formatting
+# flake8>=6.0.0                      # Code linting
