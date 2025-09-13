@@ -370,7 +370,7 @@ def run_chat(chat_state, query):
     
     chat_state.setdefault("performance_history", []).append(performance_metrics)
 
-    return response, chat_state["history"], performance_metrics
+    return response, chat_state.get("history", []), performance_metrics
 
 def run_model_comparison(chat_states, query, test_name=""):
     """Run the same query across multiple models for comparison with rate limit handling."""
