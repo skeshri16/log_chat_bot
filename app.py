@@ -213,18 +213,44 @@ if "vectorstore" not in st.session_state:
     st.session_state.vectorstore = None
 if "comparison_results" not in st.session_state:
     st.session_state.comparison_results = []
+if "processed_file_name" not in st.session_state:
+    st.session_state.processed_file_name = None
+if "chunks" not in st.session_state:
+    st.session_state.chunks = None
 
 if uploaded_file and api_configured:
-    try:
-        with st.spinner("📑 Chunking log file..."):
-            chunks = load_and_chunk(uploaded_file)
-        st.success(f"✅ Chunking done! Created {len(chunks)} chunks.")
+    # Check if this is a new file or if we need to reprocess
+    current_file_name = uploaded_file.name
+    need_to_process = (
+        st.session_state.processed_file_name != current_file_name or 
+        st.session_state.vectorstore is None or
+        st.session_state.chunks is None
+    )
+    
+    if need_to_process:
+        try:
+            with st.spinner("📑 Chunking log file..."):
+                chunks = load_and_chunk(uploaded_file)
+                st.session_state.chunks = chunks
+            st.success(f"✅ Chunking done! Created {len(chunks)} chunks.")
 
-        with st.spinner("🔍 Creating embeddings & building vectorstore..."):
-            vectorstore = build_vectorstore(chunks)
-            st.session_state.vectorstore = vectorstore
-        st.success("✅ Embedding process completed!")
+            with st.spinner("🔍 Creating embeddings & building vectorstore..."):
+                vectorstore = build_vectorstore(chunks)
+                st.session_state.vectorstore = vectorstore
+                st.session_state.processed_file_name = current_file_name
+            st.success("✅ Embedding process completed!")
 
+        except AuthenticationError:
+            st.error("❌ API key invalid or expired. Please check your API keys.")
+        except Exception as e:
+            st.error(f"❌ Error processing file: {str(e)}")
+    else:
+        # File already processed, just show status
+        st.success(f"✅ File '{current_file_name}' already processed! Using existing embeddings.")
+        st.info(f"📊 Chunks: {len(st.session_state.chunks)} | Vectorstore: Ready")
+
+    # Only proceed with chat initialization if vectorstore is ready
+    if st.session_state.vectorstore:
         # Initialize chat states based on mode
         if testing_mode == "Single Model Chat":
             if selected_model not in st.session_state.chat_states:
@@ -234,12 +260,12 @@ if uploaded_file and api_configured:
                         st.error("❌ Please provide Azure Client ID and Client Secret for Azure models.")
                         st.stop()
                     st.session_state.chat_states[selected_model] = get_azure_chat_chain_configured(
-                        vectorstore, azure_client_id, azure_client_secret, selected_model
+                        st.session_state.vectorstore, azure_client_id, azure_client_secret, selected_model
                     )
                 # Check if it's a Groq model and Groq is enabled
                 elif use_groq and groq_api_key:
                     st.session_state.chat_states[selected_model] = get_chat_chain(
-                        vectorstore, groq_api_key, selected_model
+                        st.session_state.vectorstore, groq_api_key, selected_model
                     )
                 else:
                     st.error("❌ Please configure the appropriate API for the selected model.")
@@ -256,12 +282,12 @@ if uploaded_file and api_configured:
                                 st.error("❌ Please provide Azure Client ID and Client Secret for Azure models.")
                                 st.stop()
                             st.session_state.chat_states[model] = get_azure_chat_chain_configured(
-                                vectorstore, azure_client_id, azure_client_secret, model
+                                st.session_state.vectorstore, azure_client_id, azure_client_secret, model
                             )
                         # Check if it's a Groq model and Groq is enabled
                         elif use_groq and groq_api_key:
                             st.session_state.chat_states[model] = get_chat_chain(
-                                vectorstore, groq_api_key, model
+                                st.session_state.vectorstore, groq_api_key, model
                             )
                         else:
                             st.warning(f"⚠️ Skipping {model} - API not configured")
@@ -269,10 +295,6 @@ if uploaded_file and api_configured:
             st.success(f"🚀 {len([m for m in selected_models if m in st.session_state.chat_states])} models ready for comparison!")
             st.info("💡 **Models are initialized but not running yet.** Enter a query below and click 'Run Comparison' to start the actual comparison.")
 
-    except AuthenticationError:
-        st.error("❌ API key invalid or expired. Please check your API keys.")
-    except Exception as e:
-        st.error(f"❌ Error processing file: {str(e)}")
 elif uploaded_file and not api_configured:
     st.warning("⚠️ Please configure at least one API (Groq or Azure OpenAI) to process the file.")
     st.info("💡 Enable Groq or Azure OpenAI in the sidebar and provide the required credentials.")
@@ -539,3 +561,14 @@ if st.session_state.comparison_results:
     if st.button("🗑️ Clear Results"):
         st.session_state.comparison_results = []
         st.rerun()
+
+# Clear processed file cache button (for debugging/force reload)
+if st.session_state.vectorstore is not None:
+    with st.expander("🔧 Advanced Options", expanded=False):
+        if st.button("🗑️ Clear File Cache (Force Reprocess)", help="Clear the cached file and force reprocessing of embeddings"):
+            st.session_state.vectorstore = None
+            st.session_state.chunks = None
+            st.session_state.processed_file_name = None
+            st.session_state.chat_states = {}  # Also clear chat states as they depend on vectorstore
+            st.success("✅ File cache cleared! Upload your file again to reprocess.")
+            st.rerun()
