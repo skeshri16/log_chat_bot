@@ -60,7 +60,6 @@ Log Chat Boat is a sophisticated log analysis tool that combines the power of mo
    ```bash
    streamlit run app.py
    ```
-
 5. **Open your browser**
    - Navigate to `http://localhost:8501`
    - Configure your API keys
@@ -72,13 +71,11 @@ Log Chat Boat is a sophisticated log analysis tool that combines the power of mo
 
 #### Groq API
 1. Get your API key from [Groq Console](https://console.groq.com)
-2. Enable "Groq Models" checkbox in the sidebar
-3. Enter your API key in the "Groq API Key" field
+2. Enter your API key in the "Groq API Key" field
 
 #### Azure OpenAI (Optional)
-1. Enable "Azure OpenAI Models" checkbox in the sidebar
-2. Enter your Azure Client ID and Client Secret
-3. These credentials are provided by your organization's Azure administrator
+1. Enter your Azure Client ID and Client Secret
+2. These credentials are provided by your organization's Azure administrator
 
 ### Supported Models
 
@@ -86,11 +83,6 @@ Log Chat Boat is a sophisticated log analysis tool that combines the power of mo
 - **Llama 3.1 8B Instant** - Fast and efficient
 - **OpenAI GPT-OSS 120B** - Large context window
 - **OpenAI GPT-OSS 20B** - Balanced performance
-
-#### 🟡 Groq Models (May Hit Rate Limits)
-- **Llama 3.3 70B Versatile** - High quality responses
-- **Groq Compound** - Advanced reasoning
-- **Groq Compound Mini** - Compact reasoning
 
 #### 🔵 Azure OpenAI Models (Enterprise)
 - **Azure GPT-4o Mini** - Fast enterprise model
@@ -154,33 +146,26 @@ log_chat_boat/
 │   ├── vectorstore.py         # Vector database operations
 │   ├── azure_openai.py        # Azure OpenAI integration
 │   └── api_test.py            # API testing utilities
-├── data/                      # Sample data and logs
-├── docs/                      # Documentation
-│   ├── API_TESTING_GUIDE.md   # API testing features guide
-│   ├── AZURE_OPENAI_GUIDE.md  # Azure integration guide
-│   └── MODEL_COMPARISON_GUIDE.md # Model comparison guide
-└── tests/                     # Test scripts
-    ├── test_azure_openai.py   # Azure integration tests
-    ├── test_full_integration.py # Comprehensive tests
-    └── test_*.py              # Various test utilities
+
 ```
 
 ## 🎨 User Interface
 
 ### Sidebar Configuration
 - **API Selection**: Checkboxes to enable/disable Groq and Azure OpenAI
-- **API Keys**: Secure input fields for credentials
 - **Model Selection**: Automatically filtered based on enabled APIs
 - **Mode Selection**: Single chat, comparison, or analysis
-- **Status Indicators**: Real-time API configuration status
 
 ### Main Interface
+- **API Keys**: Secure input fields for credentials
+- **Status Indicators**: Real-time API configuration status
 - **File Upload**: Drag-and-drop log file upload
 - **Chat Interface**: Natural language queries about logs
 - **Results Display**: Formatted responses with metrics
 - **Comparison View**: Side-by-side model comparison
 - **Performance Charts**: Interactive visualizations
 
+  
 ## 🛠️ Technical Architecture
 
 ### Core Technologies
@@ -237,13 +222,7 @@ Query → Model Router → [Groq Models | Azure Models] → Response Aggregation
 - **Session Isolation**: Each session is independent
 - **Memory Management**: Automatic cleanup of processed data
 
-## 🧪 Testing & Quality Assurance
-
-### Test Coverage
-- **Unit Tests**: Individual component testing
-- **Integration Tests**: End-to-end API testing
-- **Performance Tests**: Response time benchmarking
-- **Error Handling Tests**: Rate limit and failure scenarios
+## 🧪 Quality Assurance
 
 ### Quality Features
 - **Type Hints**: Comprehensive type annotations
